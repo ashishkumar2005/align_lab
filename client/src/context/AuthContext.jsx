@@ -1,6 +1,12 @@
 import { createContext, useContext, useMemo, useState } from "react";
 
-import { clearSession, getStoredToken, getStoredUser, loginRequest, storeSession } from "../services/api.js";
+import {
+  clearSession,
+  getStoredToken,
+  getStoredUser,
+  loginRequest,
+  storeSession,
+} from "../services/api.js";
 
 const AuthContext = createContext(null);
 
@@ -10,9 +16,12 @@ export function AuthProvider({ children }) {
 
   async function login(username, password) {
     const data = await loginRequest(username, password);
-    storeSession(data.access_token, data.user);
-    setToken(data.access_token);
+
+    // ✅ FIX: use "token" instead of "access_token"
+    storeSession(data.token, data.user);
+    setToken(data.token);
     setUser(data.user);
+
     return data.user;
   }
 
@@ -30,7 +39,7 @@ export function AuthProvider({ children }) {
       token,
       user,
     }),
-    [token, user],
+    [token, user]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
