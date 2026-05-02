@@ -1,5 +1,8 @@
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL;
+
+// 🔥 DEBUG (remove later)
+console.log("API URL:", API_URL);
+
 const TOKEN_KEY = "alignlab_token";
 const USER_KEY = "alignlab_user";
 
@@ -41,11 +44,17 @@ async function parseError(response) {
 }
 
 export async function apiFetch(path, options = {}) {
+  if (!API_URL) {
+    throw new Error("API URL is not defined. Check VITE_API_URL.");
+  }
+
   const token = getStoredToken();
   const headers = new Headers(options.headers || {});
+
   if (!headers.has("Content-Type") && options.body && !(options.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
+
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
   }
@@ -81,20 +90,30 @@ export function loginRequest(username, password) {
 }
 
 export async function downloadCsv(path, filename) {
+  if (!API_URL) {
+    throw new Error("API URL is not defined. Check VITE_API_URL.");
+  }
+
   const token = getStoredToken();
+
   const response = await fetch(`${API_URL}${path}`, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
+
   if (!response.ok) {
     throw new Error(await parseError(response));
   }
+
   const blob = await response.blob();
   const url = window.URL.createObjectURL(blob);
+
   const link = document.createElement("a");
   link.href = url;
   link.download = filename;
+
   document.body.appendChild(link);
   link.click();
   link.remove();
+
   window.URL.revokeObjectURL(url);
 }
