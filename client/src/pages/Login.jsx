@@ -12,9 +12,9 @@ export default function Login() {
   const [form, setForm] = useState({ username: "admin", password: "admin123" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // ✅ Redirect if already logged in
+  // ✅ FIXED REDIRECT (was /dashboard)
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/" replace />;
   }
 
   async function handleSubmit(event) {
@@ -26,8 +26,8 @@ export default function Login() {
 
       toast.success("Welcome back");
 
-      // ✅ FORCE REDIRECT (FIXED)
-      navigate("/dashboard");
+      // ✅ FIXED REDIRECT (was /dashboard)
+      navigate("/");
 
     } catch (error) {
       toast.error(error.message);
