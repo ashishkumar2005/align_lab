@@ -3,12 +3,15 @@ import cors from "cors";
 
 const app = express();
 
-// ✅ FIXED CORS (important for Vercel → Render connection)
+// ✅ FIXED CORS (with OPTIONS support)
 app.use(cors({
   origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+// 🔥 IMPORTANT: handle preflight requests
+app.options("*", cors());
 
 app.use(express.json());
 
