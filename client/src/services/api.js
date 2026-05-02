@@ -1,4 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000";
 const TOKEN_KEY = "alignlab_token";
 const USER_KEY = "alignlab_user";
 
