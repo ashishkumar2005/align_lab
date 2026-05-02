@@ -3,7 +3,13 @@ import cors from "cors";
 
 const app = express();
 
-app.use(cors());
+// ✅ FIXED CORS (important for Vercel → Render connection)
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json());
 
 // Test routes
@@ -15,7 +21,7 @@ app.get("/api/test", (req, res) => {
   res.json({ message: "API working" });
 });
 
-// ✅ ADD THIS LOGIN ROUTE
+// ✅ LOGIN ROUTE
 app.post("/auth/login", (req, res) => {
   const { username, password } = req.body;
 
