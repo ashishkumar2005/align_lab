@@ -7,6 +7,7 @@ import AppLayout from "./components/AppLayout.jsx";
 import AdminOnly from "./components/AdminOnly.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
+
 import Compare from "./pages/Compare.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Home from "./pages/Home.jsx";
@@ -14,6 +15,7 @@ import Label from "./pages/Label.jsx";
 import Leaderboard from "./pages/Leaderboard.jsx";
 import Login from "./pages/Login.jsx";
 import Rubric from "./pages/Rubric.jsx";
+
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -30,28 +32,36 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             },
           }}
         />
+
         <Routes>
+          {/* Public Route */}
           <Route path="/login" element={<Login />} />
+
+          {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
-              <Route index element={<Home />} />
-              <Route path="compare" element={<Compare />} />
-              <Route path="rubric" element={<Rubric />} />
-              <Route path="label" element={<Label />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/compare" element={<Compare />} />
+              <Route path="/rubric" element={<Rubric />} />
+              <Route path="/label" element={<Label />} />
+
               <Route
-                path="dashboard"
+                path="/dashboard"
                 element={
                   <AdminOnly>
                     <Dashboard />
                   </AdminOnly>
                 }
               />
-              <Route path="leaderboard" element={<Leaderboard />} />
+
+              <Route path="/leaderboard" element={<Leaderboard />} />
             </Route>
           </Route>
-          <Route path="*" element={<Navigate to="/" replace />} />
+
+          {/* Default redirect */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );
