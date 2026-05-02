@@ -3,15 +3,20 @@ import cors from "cors";
 
 const app = express();
 
-// ✅ FIXED CORS (with OPTIONS support)
+// ✅ FIXED CORS
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// 🔥 IMPORTANT: handle preflight requests
-app.options("*", cors());
+// ✅ SAFE preflight handler (no crash)
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 app.use(express.json());
 
