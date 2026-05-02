@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { LockKeyhole, LogIn, UserRound } from "lucide-react";
@@ -9,23 +9,26 @@ import { useAuth } from "../context/AuthContext.jsx";
 export default function Login() {
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const [form, setForm] = useState({ username: "admin", password: "admin123" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // ✅ Redirect if already logged in
   if (isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
-
-  const from = location.state?.from?.pathname || "/";
 
   async function handleSubmit(event) {
     event.preventDefault();
     setIsSubmitting(true);
+
     try {
       await login(form.username, form.password);
+
       toast.success("Welcome back");
-      navigate(from, { replace: true });
+
+      // ✅ FORCE REDIRECT (FIXED)
+      navigate("/dashboard");
+
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -46,7 +49,9 @@ export default function Login() {
             A
           </div>
           <h1 className="text-3xl font-extrabold text-white">AlignLab</h1>
-          <p className="mt-2 text-sm text-slate-400">Human preference data and LLM evaluation workspace</p>
+          <p className="mt-2 text-sm text-slate-400">
+            Human preference data and LLM evaluation workspace
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="glass-panel rounded-lg p-6">
@@ -59,7 +64,9 @@ export default function Login() {
               id="username"
               className="focus-ring w-full bg-transparent py-3 text-white placeholder:text-slate-600"
               value={form.username}
-              onChange={(event) => setForm((current) => ({ ...current, username: event.target.value }))}
+              onChange={(event) =>
+                setForm((current) => ({ ...current, username: event.target.value }))
+              }
               autoComplete="username"
               required
             />
@@ -75,7 +82,9 @@ export default function Login() {
               type="password"
               className="focus-ring w-full bg-transparent py-3 text-white placeholder:text-slate-600"
               value={form.password}
-              onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
+              onChange={(event) =>
+                setForm((current) => ({ ...current, password: event.target.value }))
+              }
               autoComplete="current-password"
               required
             />
